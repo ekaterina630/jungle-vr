@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Insane Jungle VR Adventure</title>
+  <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+  <script src="https://cdn.rawgit.com/protyze/aframe-curve-component/v3.0.1/dist/aframe-curve-component.min.js"></script>
+</head>
+<body>
+  <a-scene background="color: #87ceeb" embedded>
+
+    <!-- Camera rig -->
+    <a-entity id="rig" position="0 1.6 5" movement-controls wasd-controls>
+      <a-camera></a-camera>
+    </a-entity>
+
+    <!-- Jungle ground -->
+    <a-plane rotation="-90 0 0" width="200" height="200" color="#228B22"></a-plane>
+
+    <!-- Rollercoaster rails -->
+    <a-curve id="coasterPath">
+      <a-curve-point position="0 2 -10"></a-curve-point>
+      <a-curve-point position="10 5 -20"></a-curve-point>
+      <a-curve-point position="20 7 -10"></a-curve-point>
+      <a-curve-point position="30 8 0"></a-curve-point>
+      <a-curve-point position="20 7 10"></a-curve-point>
+      <a-curve-point position="10 5 20"></a-curve-point>
+      <a-curve-point position="0 2 10"></a-curve-point>
+      <a-curve-point position="-10 1 0"></a-curve-point>
+      <a-curve-point position="0 2 -10"></a-curve-point>
+    </a-curve>
+
+    <a-entity id="rollercoaster" alongpath="curve: #coasterPath; dur: 10000; loop: false" visible="false">
+      <a-box depth="1" height="1" width="2" color="#555" position="0 0.5 0"></a-box>
+    </a-entity>
+
+    <!-- Rollercoaster start platform -->
+    <a-box id="startCoaster" position="0 0.5 5" depth="3" height="1" width="3" color="#888" 
+           event-set__click="_event: click; _target: #rollercoaster; visible: true; alongpath__play: play;"></a-box>
+
+    <!-- Zipline path -->
+    <a-curve id="ziplinePath">
+      <a-curve-point position="-40 25 -60"></a-curve-point>
+      <a-curve-point position="0 15 -30"></a-curve-point>
+      <a-curve-point position="20 10 -10"></a-curve-point>
+    </a-curve>
+
+    <a-box id="startZipline" position="-40 25 -60" depth="3" height="1" width="3" color="#ff9900"></a-box>
+
+    <script>
+      const rig = document.querySelector('#rig');
+      const coaster = document.querySelector('#rollercoaster');
+      const startCoaster = document.querySelector('#startCoaster');
+      const startZipline = document.querySelector('#startZipline');
+
+      startCoaster.addEventListener('click', () => {
+        coaster.setAttribute('visible', 'true');
+        coaster.components.alongpath.play();
+      });
+
+      startZipline.addEventListener('click', () => {
+        rig.setAttribute('alongpath', {
+          curve: '#ziplinePath',
+          dur: 15000,
+          loop: false,
+          rotate: true
+        });
+      });
+    </script>
+
+  </a-scene>
+</body>
+</html>
